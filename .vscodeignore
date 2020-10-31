@@ -9,3 +9,7 @@ vsc-extension-quickstart.md
 **/.eslintrc.json
 **/*.map
 **/*.ts
+node_modules
+.eslintignore
+.eslintrc.js
+.prettierrc.js
