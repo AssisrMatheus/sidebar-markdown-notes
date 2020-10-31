@@ -99,7 +99,7 @@
 		"watch": "tsc -watch -p ./",
 		"pretest": "npm run compile && npm run lint",
 		"test": "node ./out/test/runTest.js",
-		"deploy": "vsce publish --yarn"
+		"deploy": "vsce publish"
 	},
 	"devDependencies": {
 		"@types/glob": "^7.1.3",
