@@ -8,6 +8,7 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
+      - run: npm install
       - uses: lannonbr/vsce-action@master
         with:
           args: 'publish -p $VSCE_TOKEN'
