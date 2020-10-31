@@ -20,7 +20,7 @@
     version: 1
   };
 
-  vscode.setState(initialState);
+  // vscode.setState(initialState);
 
   // Gets the state or creates a new one if it doesn't exist
   let currentState = vscode.getState() || initialState;
