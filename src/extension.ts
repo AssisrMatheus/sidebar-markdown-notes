@@ -10,21 +10,18 @@ export function activate(context: vscode.ExtensionContext) {
   // This line of code will only be executed once when your extension is activated
   console.log('Congratulations, your extension "sidebar-markdown-notes" is now active!');
 
+  const provider = new SidebarMarkdownNotesProvider(context.extensionUri);
+  context.subscriptions.push(vscode.window.registerWebviewViewProvider(SidebarMarkdownNotesProvider.viewId, provider));
+
   // The command has been defined in the package.json file
   // Now provide the implementation of the command with registerCommand
   // The commandId parameter must match the command field in package.json
-  let disposable = vscode.commands.registerCommand('sidebar-markdown-notes.helloWorld', () => {
-    // The code you place here will be executed every time your command is executed
-
-    // Display a message box to the user
-    vscode.window.showInformationMessage('Hello World from sidebar-markdown-notes!');
-  });
-
-  context.subscriptions.push(disposable);
-
-  const provider = new SidebarMarkdownNotesProvider(context.extensionUri);
-
-  context.subscriptions.push(vscode.window.registerWebviewViewProvider(SidebarMarkdownNotesProvider.viewId, provider));
+  context.subscriptions.push(
+    vscode.commands.registerCommand('sidebar-markdown-notes.switchPreview', () => {
+      // The code you place here will be executed every time your command is executed
+      provider.switchPreview();
+    })
+  );
 }
 
 // this method is called when your extension is deactivated

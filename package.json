@@ -10,7 +10,7 @@
 		"Other"
 	],
 	"activationEvents": [
-		"onCommand:sidebar-markdown-notes.helloWorld",
+		"onCommand:sidebar-markdown-notes.switchPreview",
 		"onView:sidebarMarkdownNotes.webview"
 	],
 	"main": "./out/extension.js",
@@ -26,10 +26,21 @@
 		},
 		"commands": [
 			{
-				"command": "sidebar-markdown-notes.helloWorld",
-				"title": "Hello World"
+				"command": "sidebar-markdown-notes.switchPreview",
+				"category": "Sidebar markdown notes",
+				"title": "Switch preview",
+				"icon": "$(clear-all)"
 			}
-		]
+		],
+		"menus": {
+			"view/title": [
+				{
+					"command": "sidebar-markdown-notes.switchPreview",
+					"group": "navigation",
+					"when": "view == sidebarMarkdownNotes.webview"
+				}
+			]
+		}
 	},
 	"scripts": {
 		"vscode:prepublish": "npm run compile",

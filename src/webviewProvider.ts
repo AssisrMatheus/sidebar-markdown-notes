@@ -43,6 +43,15 @@ export default class SidebarMarkdownNotesProvider implements vscode.WebviewViewP
     // });
   }
 
+  public switchPreview() {
+    // Display a message box to the user
+    vscode.window.showInformationMessage('Hello World from sidebar-markdown-notes!');
+
+    if (this._view) {
+      this._view.webview.postMessage({ type: 'switchPreview' });
+    }
+  }
+
   private _getHtmlForWebview(webview: vscode.Webview) {
     const markedUri = webview.asWebviewUri(
       vscode.Uri.joinPath(this._extensionUri, 'node_modules', 'marked', 'marked.min.js')
