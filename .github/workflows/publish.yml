@@ -8,11 +8,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-      - name: Install Node.js
-        uses: actions/setup-node@v1
+      - uses: lannonbr/vsce-action@master
         with:
-          node-version: 10.x
-      - run: npm install
-      - run: npm run deploy
+          args: 'publish -p $VSCE_TOKEN'
         env:
-          VSCE_PAT: ${{ secrets.VSCE_PAT }}
+          VSCE_TOKEN: ${{ secrets.VSCE_PAT }}
