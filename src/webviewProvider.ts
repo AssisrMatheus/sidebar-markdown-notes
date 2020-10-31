@@ -33,22 +33,31 @@ export default class SidebarMarkdownNotesProvider implements vscode.WebviewViewP
 
     webviewView.webview.html = this._getHtmlForWebview(webviewView.webview);
 
-    // webviewView.webview.onDidReceiveMessage((data) => {
-    //   switch (data.type) {
-    //     case 'colorSelected': {
-    //       vscode.window.activeTextEditor?.insertSnippet(new vscode.SnippetString(`#${data.value}`));
-    //       break;
-    //     }
-    //   }
-    // });
+    webviewView.webview.onDidReceiveMessage((data) => {
+      switch (data.type) {
+        case 'log': {
+          vscode.window.showInformationMessage(`${data.value}`);
+          break;
+        }
+      }
+    });
   }
 
-  public switchPreview() {
-    // Display a message box to the user
-    // vscode.window.showInformationMessage('Hello World from sidebar-markdown-notes!');
-
+  public togglePreview() {
     if (this._view) {
-      this._view.webview.postMessage({ type: 'switchPreview' });
+      this._view.webview.postMessage({ type: 'togglePreview' });
+    }
+  }
+
+  public previousPage() {
+    if (this._view) {
+      this._view.webview.postMessage({ type: 'previousPage' });
+    }
+  }
+
+  public nextPage() {
+    if (this._view) {
+      this._view.webview.postMessage({ type: 'nextPage' });
     }
   }
 

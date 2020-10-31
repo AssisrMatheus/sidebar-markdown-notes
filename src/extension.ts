@@ -8,7 +8,6 @@ import SidebarMarkdownNotesProvider from './webviewProvider';
 export function activate(context: vscode.ExtensionContext) {
   // Use the console to output diagnostic information (console.log) and errors (console.error)
   // This line of code will only be executed once when your extension is activated
-  console.log('Congratulations, your extension "sidebar-markdown-notes" is now active!');
 
   const provider = new SidebarMarkdownNotesProvider(context.extensionUri);
   context.subscriptions.push(vscode.window.registerWebviewViewProvider(SidebarMarkdownNotesProvider.viewId, provider));
@@ -17,9 +16,21 @@ export function activate(context: vscode.ExtensionContext) {
   // Now provide the implementation of the command with registerCommand
   // The commandId parameter must match the command field in package.json
   context.subscriptions.push(
-    vscode.commands.registerCommand('sidebar-markdown-notes.switchPreview', () => {
+    vscode.commands.registerCommand('sidebar-markdown-notes.togglePreview', () => {
       // The code you place here will be executed every time your command is executed
-      provider.switchPreview();
+      provider.togglePreview();
+    })
+  );
+
+  context.subscriptions.push(
+    vscode.commands.registerCommand('sidebar-markdown-notes.previousPage', () => {
+      provider.previousPage();
+    })
+  );
+
+  context.subscriptions.push(
+    vscode.commands.registerCommand('sidebar-markdown-notes.nextPage', () => {
+      provider.nextPage();
     })
   );
 }

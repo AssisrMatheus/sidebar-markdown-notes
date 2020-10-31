@@ -14,7 +14,9 @@
 		"Other"
 	],
 	"activationEvents": [
-		"onCommand:sidebar-markdown-notes.switchPreview",
+		"onCommand:sidebar-markdown-notes.previousPage",
+		"onCommand:sidebar-markdown-notes.nextPage",
+		"onCommand:sidebar-markdown-notes.togglePreview",
 		"onView:sidebarMarkdownNotes.webview"
 	],
 	"main": "./out/extension.js",
@@ -30,17 +32,39 @@
 		},
 		"commands": [
 			{
-				"command": "sidebar-markdown-notes.switchPreview",
+				"command": "sidebar-markdown-notes.previousPage",
 				"category": "Sidebar markdown notes",
-				"title": "Switch preview",
-				"icon": "$(clear-all)"
+				"title": "Previous page",
+				"icon": "$(arrow-left)"
+			},
+			{
+				"command": "sidebar-markdown-notes.nextPage",
+				"category": "Sidebar markdown notes",
+				"title": "Next page",
+				"icon": "$(arrow-right)"
+			},
+			{
+				"command": "sidebar-markdown-notes.togglePreview",
+				"category": "Sidebar markdown notes",
+				"title": "Toggle preview",
+				"icon": "$(open-preview)"
 			}
 		],
 		"menus": {
 			"view/title": [
 				{
-					"command": "sidebar-markdown-notes.switchPreview",
-					"group": "navigation",
+					"command": "sidebar-markdown-notes.previousPage",
+					"group": "navigation@0",
+					"when": "view == sidebarMarkdownNotes.webview"
+				},
+				{
+					"command": "sidebar-markdown-notes.nextPage",
+					"group": "navigation@1",
+					"when": "view == sidebarMarkdownNotes.webview"
+				},
+				{
+					"command": "sidebar-markdown-notes.togglePreview",
+					"group": "navigation@2",
 					"when": "view == sidebarMarkdownNotes.webview"
 				}
 			]

@@ -8,12 +8,15 @@
   // Gets the vs code api
   const vscode = acquireVsCodeApi();
 
+  const log = (message) => vscode.postMessage({ type: 'log', value: message });
+
+  const welcomeMessage =
+    '# Welcome to `sidebar-markdown-notes`\n\nStart by typing **markdown**.\n\nClick the `Toggle preview` button to view your notes\n\nAlso works with GitHub Flavored Markdown ✨✨\n- [ ] Start by  \n- [ ] creating your own  \n- [x] checklists!  \n\nOr any kind of markdown\n\n- Your imagination  \n- Is the limit';
+
   const initialState = {
     state: 'editor',
     currentPage: 0,
-    pages: [
-      '# Welcome to `sidebar-markdown-notes`\n\nStart by typing **markdown**.\n\nClick the `Switch preview` button to view your notes\n\nAlso works with GitHub Flavored Markdown ✨✨\n- [ ] Start by  \n- [ ] creating your own  \n- [x] checklists!  \n'
-    ],
+    pages: [welcomeMessage],
     version: 1
   };
 
@@ -36,6 +39,9 @@
         startatt = ordered && start !== 1 ? ' start="' + start + '"' : '',
         hasTodo = body.match(/checkbox/i) ? ' class="todoList"' : ''; // If there's a checkbox, adds a "todoList" class
       return '<' + type + startatt + hasTodo + '>\n' + body + '</' + type + '>\n';
+    },
+    checkbox(checked) {
+      return '<input ' + (checked ? 'checked="" ' : '') + 'type="checkbox"' + (this.options.xhtml ? ' /' : '') + '> ';
     }
   };
 
@@ -56,13 +62,17 @@
         // If we want to render the markdown
 
         // Grab the html for the markdown
-        renderElement.innerHTML = DOMPurify.sanitize(marked(content));
+        renderElement.innerHTML = DOMPurify.sanitize(marked(content || ''));
 
         // Display the markdown render
         renderElement.style.display = 'initial';
 
         // Hide the editor
         editorElement.style.display = 'none';
+
+        document
+          .querySelectorAll(`input[type='checkbox']`)
+          .forEach((check) => check.addEventListener('click', (e) => e.preventDefault()));
         break;
       }
       case 'editor': {
@@ -72,7 +82,7 @@
         const editorTextArea = document.getElementById('editor-input');
 
         // Put the value in the input
-        editorTextArea.value = content;
+        editorTextArea.value = content || '';
 
         // Hide the markdown render
         renderElement.style.display = 'none';
@@ -94,8 +104,6 @@
   const saveContent = () => {
     let newState = { ...currentState };
 
-    console.log('saving content');
-
     switch (currentState.state) {
       case 'render': {
         break;
@@ -107,7 +115,14 @@
         const editorTextArea = document.getElementById('editor-input');
 
         // Make a state with the typed in value
-        newState = { ...newState, pages: { ...newState.pages, [currentState.currentPage]: editorTextArea.value } };
+        newState = {
+          ...newState,
+          pages: [
+            ...newState.pages.slice(0, newState.currentPage),
+            editorTextArea.value,
+            ...newState.pages.slice(newState.currentPage + 1)
+          ]
+        };
         break;
       }
     }
@@ -119,7 +134,7 @@
     maxWait: 500
   });
 
-  const switchPreview = () => {
+  const togglePreview = () => {
     // Grabs the new state
     let newState = { ...currentState, state: currentState.state === 'editor' ? 'render' : 'editor' };
     saveState(newState);
@@ -130,13 +145,57 @@
     renderView();
   };
 
+  const previousPage = () => {
+    saveContent();
+    if (currentState.currentPage > 0) {
+      let newState = { ...currentState, currentPage: currentState.currentPage - 1 };
+      saveState(newState);
+
+      // Renders the view, which will render the next view
+      renderView();
+
+      log(`Page ${newState.currentPage + 1}`);
+    } else {
+      log('First page');
+    }
+  };
+
+  const nextPage = () => {
+    saveContent();
+    if (currentState.currentPage <= 999) {
+      const newPageIndex = Number(currentState.currentPage) + 1;
+
+      let newState = {
+        ...currentState,
+        currentPage: newPageIndex,
+        pages: currentState.pages[newPageIndex]
+          ? currentState.pages
+          : [...currentState.pages, `Page ${newPageIndex + 1}\n${welcomeMessage}`]
+      };
+      saveState(newState);
+
+      // Renders the view, which will render the next view
+      renderView();
+
+      log(`Page ${newPageIndex + 1}`);
+    }
+  };
+
   // Handle messages sent from the extension to the webview
   window.addEventListener('message', (event) => {
     const message = event.data; // The json data that the extension sent
     switch (message.type) {
-      case 'switchPreview': {
-        // If the editor sends a switchPreview message
-        switchPreview();
+      case 'togglePreview': {
+        // If the editor sends a togglePreview message
+        togglePreview();
+        break;
+      }
+      case 'previousPage': {
+        previousPage();
+        break;
+      }
+      case 'nextPage': {
+        nextPage();
         break;
       }
     }
