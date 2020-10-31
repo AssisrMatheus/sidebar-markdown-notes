@@ -10,6 +10,23 @@
 
   const log = (message) => vscode.postMessage({ type: 'log', value: message });
 
+  const updateStatusBar = (message) => vscode.postMessage({ type: 'updateStatusBar', value: message });
+  updateStatusBar('');
+
+  let timeoutId;
+  const updateStatusForSeconds = (message, secondsToHide) => {
+    updateStatusBar(message);
+
+    if (timeoutId) {
+      clearTimeout(timeoutId);
+      timeoutId = undefined;
+    }
+
+    timeoutId = setTimeout(() => {
+      updateStatusBar('');
+    }, secondsToHide || 3000);
+  };
+
   const welcomeMessage =
     '# Welcome to `sidebar-markdown-notes`\n\nStart by typing **markdown**.\n\nClick the `Toggle preview` button to view your notes\n\nAlso works with GitHub Flavored Markdown ✨✨\n- [ ] Start by  \n- [ ] creating your own  \n- [x] checklists!  \n\nOr any kind of markdown\n\n- Your imagination  \n- Is the limit';
 
@@ -19,8 +36,6 @@
     pages: [welcomeMessage],
     version: 1
   };
-
-  // vscode.setState(initialState);
 
   // Gets the state or creates a new one if it doesn't exist
   let currentState = vscode.getState() || initialState;
@@ -99,9 +114,11 @@
     vscode.setState(newState);
     // Updates current instance
     currentState = newState;
+
+    renderView();
   };
 
-  const saveContent = () => {
+  const getUpdatedContent = () => {
     let newState = { ...currentState };
 
     switch (currentState.state) {
@@ -114,20 +131,24 @@
         // Get the editor text area
         const editorTextArea = document.getElementById('editor-input');
 
-        // Make a state with the typed in value
-        newState = {
-          ...newState,
-          pages: [
-            ...newState.pages.slice(0, newState.currentPage),
-            editorTextArea.value,
-            ...newState.pages.slice(newState.currentPage + 1)
-          ]
-        };
+        // Updates the value in state only if they're different
+        if (editorTextArea.value !== newState.pages[newState.currentPage]) {
+          // Make a state with the typed in value
+          newState = {
+            ...newState,
+            pages: [
+              ...newState.pages.slice(0, newState.currentPage),
+              editorTextArea.value,
+              ...newState.pages.slice(newState.currentPage + 1)
+            ]
+          };
+        }
+
         break;
       }
     }
 
-    saveState(newState);
+    return newState;
   };
 
   const debouncedSaveContent = _.debounce(() => saveContent(), 300, {
@@ -136,48 +157,39 @@
 
   const togglePreview = () => {
     // Grabs the new state
-    let newState = { ...currentState, state: currentState.state === 'editor' ? 'render' : 'editor' };
+    let newState = { ...getUpdatedContent(), state: currentState.state === 'editor' ? 'render' : 'editor' };
     saveState(newState);
-
-    saveContent();
-
-    // Renders the view, which will render the next view
-    renderView();
   };
 
   const previousPage = () => {
-    saveContent();
     if (currentState.currentPage > 0) {
-      let newState = { ...currentState, currentPage: currentState.currentPage - 1 };
+      let newState = { ...getUpdatedContent(), currentPage: currentState.currentPage - 1 };
+
       saveState(newState);
 
-      // Renders the view, which will render the next view
-      renderView();
-
-      log(`Page ${newState.currentPage + 1}`);
+      updateStatusForSeconds(`$(file) Page ${newState.currentPage + 1}`);
     } else {
-      log('First page');
+      updateStatusForSeconds(`$(file) Page ${currentState.currentPage + 1}`);
+      log(`You're already at the first page`);
     }
   };
 
   const nextPage = () => {
-    saveContent();
     if (currentState.currentPage <= 999) {
       const newPageIndex = Number(currentState.currentPage) + 1;
 
       let newState = {
-        ...currentState,
-        currentPage: newPageIndex,
-        pages: currentState.pages[newPageIndex]
-          ? currentState.pages
-          : [...currentState.pages, `Page ${newPageIndex + 1}\n${welcomeMessage}`]
+        ...getUpdatedContent(),
+        currentPage: newPageIndex
       };
+
+      if (!currentState.pages[newPageIndex]) {
+        newState = { ...newState, pages: [...newState.pages, `Page ${newPageIndex + 1}\n${welcomeMessage}`] };
+      }
+
       saveState(newState);
 
-      // Renders the view, which will render the next view
-      renderView();
-
-      log(`Page ${newPageIndex + 1}`);
+      updateStatusForSeconds(`$(file) Page ${newPageIndex + 1}`);
     }
   };
 
@@ -196,6 +208,10 @@
       }
       case 'nextPage': {
         nextPage();
+        break;
+      }
+      case 'resetData': {
+        saveState(initialState);
         break;
       }
     }

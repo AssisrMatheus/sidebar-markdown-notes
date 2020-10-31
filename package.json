@@ -2,7 +2,7 @@
 	"name": "sidebar-markdown-notes",
 	"displayName": "sidebar-markdown-notes",
 	"description": "Take notes in your sidebar using markdown",
-	"version": "1.0.1",
+	"version": "1.0.2",
 	"publisher": "assisrMatheus",
 	"author": {
 		"email": "assisr.matheus@gmail.com",
@@ -36,6 +36,7 @@
 		"Other"
 	],
 	"activationEvents": [
+		"onCommand:sidebar-markdown-notes.resetData",
 		"onCommand:sidebar-markdown-notes.previousPage",
 		"onCommand:sidebar-markdown-notes.nextPage",
 		"onCommand:sidebar-markdown-notes.togglePreview",
@@ -53,6 +54,11 @@
 			]
 		},
 		"commands": [
+			{
+				"command": "sidebar-markdown-notes.resetData",
+				"category": "Sidebar markdown notes",
+				"title": "Reset data"
+			},
 			{
 				"command": "sidebar-markdown-notes.previousPage",
 				"category": "Sidebar markdown notes",

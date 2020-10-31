@@ -7,7 +7,7 @@ export default class SidebarMarkdownNotesProvider implements vscode.WebviewViewP
 
   private _view?: vscode.WebviewView;
 
-  constructor(private readonly _extensionUri: vscode.Uri) {}
+  constructor(private readonly _extensionUri: vscode.Uri, private _statusBar?: vscode.StatusBarItem) {}
 
   /**
    * Revolves a webview view.
@@ -39,8 +39,18 @@ export default class SidebarMarkdownNotesProvider implements vscode.WebviewViewP
           vscode.window.showInformationMessage(`${data.value}`);
           break;
         }
+        case 'updateStatusBar': {
+          this.updateStatusBar(data.value);
+          break;
+        }
       }
     });
+  }
+
+  public resetData() {
+    if (this._view) {
+      this._view.webview.postMessage({ type: 'resetData' });
+    }
   }
 
   public togglePreview() {
@@ -58,6 +68,17 @@ export default class SidebarMarkdownNotesProvider implements vscode.WebviewViewP
   public nextPage() {
     if (this._view) {
       this._view.webview.postMessage({ type: 'nextPage' });
+    }
+  }
+
+  public updateStatusBar(content?: string) {
+    if (this._statusBar) {
+      if (content) {
+        this._statusBar.text = `${content}`;
+        this._statusBar.show();
+      } else {
+        this._statusBar.hide();
+      }
     }
   }
 
@@ -103,7 +124,7 @@ export default class SidebarMarkdownNotesProvider implements vscode.WebviewViewP
       <body>
 
         <div id="render"></div>
-        <div id="editor"><textarea id="editor-input" name="editor-input"></textarea></div>
+        <div id="editor"><textarea id="editor-input" name="editor-input" placeholder="Start by typing your markdown notes..."></textarea></div>
 
         <script nonce="${nonce}" src="${lodashUri}"></script>
         <script nonce="${nonce}" src="${purifyUri}"></script>
