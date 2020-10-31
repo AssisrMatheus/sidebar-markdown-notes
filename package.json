@@ -9,7 +9,7 @@
 		"name": "Matheus Assis Rios",
 		"url": "https://github.com/AssisrMatheus"
 	},
-	"license": "GNU",
+	"license": "GPL-3.0-or-later",
 	"icon": "images/icon.png",
 	"repository": {
 		"url": "https://www.github.com/AssisrMatheus/sidebar-markdown-notes",
