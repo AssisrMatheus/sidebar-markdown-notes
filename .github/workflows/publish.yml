@@ -4,11 +4,7 @@ on:
 
 jobs:
   build:
-    name: build
-    strategy:
-      matrix:
-        os: [macos-latest, ubuntu-latest, windows-latest]
-    runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -17,10 +13,6 @@ jobs:
         with:
           node-version: 10.x
       - run: npm install
-  publish:
-    name: publish
-    if: success() && matrix.os == 'ubuntu-latest'
-    steps:
       - run: npm run deploy
         env:
           VSCE_PAT: ${{ secrets.VSCE_PAT }}
