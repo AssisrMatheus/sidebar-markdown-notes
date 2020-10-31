@@ -45,7 +45,7 @@ export default class SidebarMarkdownNotesProvider implements vscode.WebviewViewP
 
   public switchPreview() {
     // Display a message box to the user
-    vscode.window.showInformationMessage('Hello World from sidebar-markdown-notes!');
+    // vscode.window.showInformationMessage('Hello World from sidebar-markdown-notes!');
 
     if (this._view) {
       this._view.webview.postMessage({ type: 'switchPreview' });
@@ -53,17 +53,26 @@ export default class SidebarMarkdownNotesProvider implements vscode.WebviewViewP
   }
 
   private _getHtmlForWebview(webview: vscode.Webview) {
+    const purifyUri = webview.asWebviewUri(
+      vscode.Uri.joinPath(this._extensionUri, 'node_modules', 'dompurify', 'dist', 'purify.min.js')
+    );
+
     const markedUri = webview.asWebviewUri(
       vscode.Uri.joinPath(this._extensionUri, 'node_modules', 'marked', 'marked.min.js')
+    );
+
+    const lodashUri = webview.asWebviewUri(
+      vscode.Uri.joinPath(this._extensionUri, 'node_modules', 'lodash', 'lodash.min.js')
     );
 
     // Get the local path to main script run in the webview, then convert it to a uri we can use in the webview.
     const scriptUri = webview.asWebviewUri(vscode.Uri.joinPath(this._extensionUri, 'media', 'main.js'));
 
     // Do the same for the stylesheet.
-    // const styleResetUri = webview.asWebviewUri(vscode.Uri.joinPath(this._extensionUri, 'media', 'reset.css'));
-    // const styleVSCodeUri = webview.asWebviewUri(vscode.Uri.joinPath(this._extensionUri, 'media', 'vscode.css'));
-    // const styleMainUri = webview.asWebviewUri(vscode.Uri.joinPath(this._extensionUri, 'media', 'main.css'));
+    const styleResetUri = webview.asWebviewUri(vscode.Uri.joinPath(this._extensionUri, 'media', 'reset.css'));
+    const markdownCss = webview.asWebviewUri(vscode.Uri.joinPath(this._extensionUri, 'media', 'markdown.css'));
+    const styleVSCodeUri = webview.asWebviewUri(vscode.Uri.joinPath(this._extensionUri, 'media', 'vscode.css'));
+    const styleMainUri = webview.asWebviewUri(vscode.Uri.joinPath(this._extensionUri, 'media', 'main.css'));
 
     // Use a nonce to only allow a specific script to be run.
     const nonce = this._getNonce();
@@ -79,12 +88,22 @@ export default class SidebarMarkdownNotesProvider implements vscode.WebviewViewP
 				-->
 				<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src ${webview.cspSource}; script-src 'nonce-${nonce}';">
 
-				<meta name="viewport" content="width=device-width, initial-scale=1.0">
-				
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <link href="${styleResetUri}" rel="stylesheet">
+        <link href="${styleVSCodeUri}" rel="stylesheet">
+        <link href="${markdownCss}" rel="stylesheet">
+				<link href="${styleMainUri}" rel="stylesheet">
+
 				<title>Sidebar markdown notes</title>
 			</head>
-			<body>
-        <div id="content"></div>
+      <body>
+
+        <div id="render"></div>
+        <div id="editor"><textarea id="editor-input" name="editor-input"></textarea></div>
+
+        <script nonce="${nonce}" src="${lodashUri}"></script>
+        <script nonce="${nonce}" src="${purifyUri}"></script>
         <script nonce="${nonce}" src="${markedUri}"></script>
 				<script nonce="${nonce}" src="${scriptUri}"></script>
 			</body>
