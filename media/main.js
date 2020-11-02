@@ -67,7 +67,7 @@
   const renderView = () => {
     // Grabs the elements
     const renderElement = document.getElementById('render');
-    const editorElement = document.getElementById('editor');
+    const editorElement = document.getElementById('content');
 
     // Gets the latest markdown content
     const content = currentState.pages[currentState.currentPage];
@@ -79,11 +79,10 @@
         // Grab the html for the markdown
         renderElement.innerHTML = DOMPurify.sanitize(marked(content || ''));
 
-        // Display the markdown render
-        renderElement.style.display = 'initial';
-
-        // Hide the editor
-        editorElement.style.display = 'none';
+        if (renderElement.classList.contains('hidden')) {
+          renderElement.classList.remove('hidden');
+        }
+        editorElement.classList.add('hidden');
 
         document
           .querySelectorAll(`input[type='checkbox']`)
@@ -94,16 +93,15 @@
         // If we want to render the text editor
 
         // Grabs the text input
-        const editorTextArea = document.getElementById('editor-input');
+        const editorTextArea = document.getElementById('text-input');
 
         // Put the value in the input
         editorTextArea.value = content || '';
 
-        // Hide the markdown render
-        renderElement.style.display = 'none';
-
-        // Display the editor
-        editorElement.style.display = 'initial';
+        if (editorElement.classList.contains('hidden')) {
+          editorElement.classList.remove('hidden');
+        }
+        renderElement.classList.add('hidden');
         break;
       }
     }
@@ -129,7 +127,7 @@
         // If the current state is the editor
 
         // Get the editor text area
-        const editorTextArea = document.getElementById('editor-input');
+        const editorTextArea = document.getElementById('text-input');
 
         // Updates the value in state only if they're different
         if (editorTextArea.value !== newState.pages[newState.currentPage]) {
@@ -151,7 +149,7 @@
     return newState;
   };
 
-  const debouncedSaveContent = _.debounce(() => saveContent(), 300, {
+  const debouncedSaveContent = _.debounce(() => saveState(getUpdatedContent()), 300, {
     maxWait: 500
   });
 
@@ -217,14 +215,14 @@
     }
   });
 
-  document.getElementById('editor-input').addEventListener('keydown', (event) => {
+  document.getElementById('text-input').addEventListener('keydown', (event) => {
     if (event.key === 'Tab') {
       // prevent the focus lose on tab press
       event.preventDefault();
     }
   });
 
-  document.getElementById('editor-input').addEventListener('input', () => {
+  document.getElementById('text-input').addEventListener('input', () => {
     debouncedSaveContent();
   });
 

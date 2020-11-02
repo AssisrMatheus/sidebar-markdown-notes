@@ -124,7 +124,7 @@ export default class SidebarMarkdownNotesProvider implements vscode.WebviewViewP
       <body>
 
         <div id="render"></div>
-        <div id="editor"><textarea id="editor-input" name="editor-input" placeholder="Start by typing your markdown notes..."></textarea></div>
+        <div id="content"><textarea id="text-input" name="text-input" placeholder="Start by typing your markdown notes..."></textarea></div>
 
         <script nonce="${nonce}" src="${lodashUri}"></script>
         <script nonce="${nonce}" src="${purifyUri}"></script>

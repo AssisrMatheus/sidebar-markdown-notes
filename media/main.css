@@ -1,4 +1,4 @@
-#editor-input {
+#text-input {
   height: 100%;
   resize: none;
   outline: 0;
@@ -14,4 +14,17 @@ body {
   list-style: none;
   margin: 0;
   padding: 0;
+}
+
+.hidden {
+  display: none !important;
+}
+
+#content,
+#render {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  left: 0;
 }
