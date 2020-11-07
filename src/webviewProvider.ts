@@ -7,6 +7,8 @@ export default class SidebarMarkdownNotesProvider implements vscode.WebviewViewP
 
   private _view?: vscode.WebviewView;
 
+  private config = vscode.workspace.getConfiguration('sidebar-markdown-notes');
+
   constructor(private readonly _extensionUri: vscode.Uri, private _statusBar?: vscode.StatusBarItem) {}
 
   /**
@@ -43,6 +45,13 @@ export default class SidebarMarkdownNotesProvider implements vscode.WebviewViewP
           this.updateStatusBar(data.value);
           break;
         }
+      }
+    });
+
+    vscode.workspace.onDidChangeConfiguration((e) => {
+      if (e.affectsConfiguration('sidebar-markdown-notes')) {
+        this.config = vscode.workspace.getConfiguration('sidebar-markdown-notes');
+        webviewView.webview.html = this._getHtmlForWebview(webviewView.webview);
       }
     });
   }
@@ -110,7 +119,9 @@ export default class SidebarMarkdownNotesProvider implements vscode.WebviewViewP
 					Use a content security policy to only allow loading images from https or from our extension directory,
 					and only allow scripts that have a specific nonce.
 				-->
-				<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src ${webview.cspSource}; script-src 'nonce-${nonce}';">
+				<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src ${
+          webview.cspSource
+        }; script-src 'nonce-${nonce}';">
 
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
@@ -126,6 +137,15 @@ export default class SidebarMarkdownNotesProvider implements vscode.WebviewViewP
         <div id="render"></div>
         <div id="content"><textarea id="text-input" name="text-input" placeholder="Start by typing your markdown notes..."></textarea></div>
 
+        <script nonce="${nonce}">
+          (function () {
+            const renderElement = document.getElementById('render');
+            const editorElement = document.getElementById('content');
+
+            renderElement.style.paddingLeft = ${this.config.get<boolean>('leftMargin') === true ? '"20px"' : '"0px"'};
+            editorElement.style.paddingLeft = ${this.config.get<boolean>('leftMargin') === true ? '"20px"' : '"0px"'};
+          })();
+        </script>
         <script nonce="${nonce}" src="${lodashUri}"></script>
         <script nonce="${nonce}" src="${purifyUri}"></script>
         <script nonce="${nonce}" src="${markedUri}"></script>
