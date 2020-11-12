@@ -9,8 +9,15 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
       - run: npm install
-      - uses: lannonbr/vsce-action@master
+      - name: Publish to Open VSX Registry
+        uses: HaaLeo/publish-vscode-extension@v0
+        id: publishToOpenVSX
         with:
-          args: 'publish -p $VSCE_TOKEN'
-        env:
-          VSCE_TOKEN: ${{ secrets.VSCE_PAT }}
+          pat: ${{ secrets.OPEN_VSX_TOKEN }}
+      - name: Publish to Visual Studio Marketplace
+        uses: HaaLeo/publish-vscode-extension@v0
+        with:
+          pat: ${{ secrets.VSCE_PAT }}
+          registryUrl: https://marketplace.visualstudio.com
+          extensionFile: ${{ steps.publishToOpenVSX.outputs.vsixPath }}
+          packagePath: ''
