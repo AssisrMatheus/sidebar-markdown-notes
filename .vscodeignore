@@ -15,3 +15,5 @@ node_modules
 .prettierrc.js
 out
 webpack.config.js
+images
+.github
