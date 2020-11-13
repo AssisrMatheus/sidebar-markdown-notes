@@ -46,6 +46,22 @@
     breaks: true
   });
 
+  // Creates custom tokenizers for the marked markdown
+  const tokenizer = {
+    codespan(src) {
+      const match = src.match(/\$+([^\$\n]+?)\$+/);
+      if (match) {
+        return {
+          type: 'codespan',
+          raw: match[0],
+          text: match[0]
+        };
+      }
+      // return false to use original codespan tokenizer
+      return false;
+    }
+  };
+
   // Creates custom renderers for the marked markdown
   const renderer = {
     // Ref: https://github.com/markedjs/marked/blob/master/src/Renderer.js
@@ -57,8 +73,24 @@
     },
     checkbox(checked) {
       return '<input ' + (checked ? 'checked="" ' : '') + 'type="checkbox"' + (this.options.xhtml ? ' /' : '') + '> ';
+    },
+    codespan(code) {
+      try {
+        const match = code.match(/\$+([^\$\n]+?)\$+/);
+        if (match && katex && katex.renderToString) {
+          const a = katex.renderToString(match[1].trim());
+          console.log(a);
+          return a;
+        } else {
+          return '<code>' + code + '</code>';
+        }
+      } catch {
+        return '<code>' + code + '</code>';
+      }
     }
   };
+
+  marked.use({ tokenizer });
 
   // Use the created renderer
   marked.use({ renderer });

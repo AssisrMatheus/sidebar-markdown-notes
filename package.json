@@ -97,16 +97,18 @@
 				}
 			]
 		},
-		"configuration": [{
-			"title": "Sidebar markdown notes",
-			"properties": {
-				"sidebar-markdown-notes.leftMargin": {
-					"type": "boolean",
-					"default": false,
-					"description": "Whether or not a left margin should be added to the main view. To align it with other elements"
+		"configuration": [
+			{
+				"title": "Sidebar markdown notes",
+				"properties": {
+					"sidebar-markdown-notes.leftMargin": {
+						"type": "boolean",
+						"default": false,
+						"description": "Whether or not a left margin should be added to the main view. To align it with other elements"
+					}
 				}
 			}
-		}]
+		]
 	},
 	"scripts": {
 		"vscode:prepublish": "npm run compile",
@@ -139,6 +141,7 @@
 	},
 	"dependencies": {
 		"dompurify": "^2.2.0",
+		"katex": "^0.12.0",
 		"lodash": "^4.17.20",
 		"marked": "^1.2.2"
 	}

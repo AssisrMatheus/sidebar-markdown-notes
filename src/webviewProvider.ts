@@ -92,16 +92,20 @@ export default class SidebarMarkdownNotesProvider implements vscode.WebviewViewP
   }
 
   private _getHtmlForWebview(webview: vscode.Webview) {
+    const katexUri = webview.asWebviewUri(
+      vscode.Uri.joinPath(this._extensionUri, 'media', 'lib', 'katex', 'katex.min.js')
+    );
     const purifyUri = webview.asWebviewUri(vscode.Uri.joinPath(this._extensionUri, 'media', 'lib', 'purify.min.js'));
-
     const markedUri = webview.asWebviewUri(vscode.Uri.joinPath(this._extensionUri, 'media', 'lib', 'marked.min.js'));
-
     const lodashUri = webview.asWebviewUri(vscode.Uri.joinPath(this._extensionUri, 'media', 'lib', 'lodash.min.js'));
 
     // Get the local path to main script run in the webview, then convert it to a uri we can use in the webview.
     const scriptUri = webview.asWebviewUri(vscode.Uri.joinPath(this._extensionUri, 'media', 'main.js'));
 
     // Do the same for the stylesheet.
+    const styleKatex = webview.asWebviewUri(
+      vscode.Uri.joinPath(this._extensionUri, 'media', 'lib', 'katex', 'katex.min.css')
+    );
     const styleResetUri = webview.asWebviewUri(vscode.Uri.joinPath(this._extensionUri, 'media', 'reset.css'));
     const markdownCss = webview.asWebviewUri(vscode.Uri.joinPath(this._extensionUri, 'media', 'markdown.css'));
     const styleVSCodeUri = webview.asWebviewUri(vscode.Uri.joinPath(this._extensionUri, 'media', 'vscode.css'));
@@ -125,6 +129,7 @@ export default class SidebarMarkdownNotesProvider implements vscode.WebviewViewP
 
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+        <link href="${styleKatex}" rel="stylesheet">
         <link href="${styleResetUri}" rel="stylesheet">
         <link href="${styleVSCodeUri}" rel="stylesheet">
         <link href="${markdownCss}" rel="stylesheet">
@@ -146,6 +151,7 @@ export default class SidebarMarkdownNotesProvider implements vscode.WebviewViewP
             editorElement.style.paddingLeft = ${this.config.get<boolean>('leftMargin') === true ? '"20px"' : '"0px"'};
           })();
         </script>
+        <script nonce="${nonce}" src="${katexUri}"></script>
         <script nonce="${nonce}" src="${lodashUri}"></script>
         <script nonce="${nonce}" src="${purifyUri}"></script>
         <script nonce="${nonce}" src="${markedUri}"></script>
