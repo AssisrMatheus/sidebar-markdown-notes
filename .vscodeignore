@@ -13,3 +13,5 @@ node_modules
 .eslintignore
 .eslintrc.js
 .prettierrc.js
+out
+webpack.config.js
