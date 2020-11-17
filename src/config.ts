@@ -1,8 +1,5 @@
 import * as vscode from 'vscode';
 
-import {
-	SidebarMardownNotesConfig
-} from './types';
 
 class Config {
     private readonly config: vscode.WorkspaceConfiguration;
