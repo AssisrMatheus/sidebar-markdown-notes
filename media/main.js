@@ -33,7 +33,7 @@
   const initialState = {
     state: 'editor',
     currentPage: 0,
-    pages: [welcomeMessage],
+    pages: [config['showWelcomeText'] ? welcomeMessage : ''],
     version: 1
   };
 

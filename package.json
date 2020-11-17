@@ -105,6 +105,11 @@
 						"type": "boolean",
 						"default": false,
 						"description": "Whether or not a left margin should be added to the main view. To align it with other elements"
+					},
+					"sidebar-markdown-notes.showWelcomeText": {
+						"type": "boolean",
+						"default": true,
+						"description": "Specifies whether the hint text on new pages should be shown."
 					}
 				}
 			}
