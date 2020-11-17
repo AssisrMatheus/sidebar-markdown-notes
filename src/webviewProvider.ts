@@ -2,12 +2,14 @@
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from 'vscode';
 
+import { getConfig } from './config';
+
 export default class SidebarMarkdownNotesProvider implements vscode.WebviewViewProvider {
   public static readonly viewId = 'sidebarMarkdownNotes.webview';
 
   private _view?: vscode.WebviewView;
 
-  private config = vscode.workspace.getConfiguration('sidebar-markdown-notes');
+  private config = getConfig();
 
   constructor(private readonly _extensionUri: vscode.Uri, private _statusBar?: vscode.StatusBarItem) {}
 
@@ -50,7 +52,7 @@ export default class SidebarMarkdownNotesProvider implements vscode.WebviewViewP
 
     vscode.workspace.onDidChangeConfiguration((e) => {
       if (e.affectsConfiguration('sidebar-markdown-notes')) {
-        this.config = vscode.workspace.getConfiguration('sidebar-markdown-notes');
+        this.config = getConfig();
         webviewView.webview.html = this._getHtmlForWebview(webviewView.webview);
       }
     });
@@ -110,6 +112,10 @@ export default class SidebarMarkdownNotesProvider implements vscode.WebviewViewP
     // Use a nonce to only allow a specific script to be run.
     const nonce = this._getNonce();
 
+    const config = JSON.stringify({
+      leftMargin: this.config.leftMargin
+    });
+
     return `<!DOCTYPE html>
 			<html lang="en">
 			<head>
@@ -142,13 +148,14 @@ export default class SidebarMarkdownNotesProvider implements vscode.WebviewViewP
             const renderElement = document.getElementById('render');
             const editorElement = document.getElementById('content');
 
-            renderElement.style.paddingLeft = ${this.config.get<boolean>('leftMargin') === true ? '"20px"' : '"0px"'};
-            editorElement.style.paddingLeft = ${this.config.get<boolean>('leftMargin') === true ? '"20px"' : '"0px"'};
+            renderElement.style.paddingLeft = ${this.config.leftMargin === true ? '"20px"' : '"0px"'};
+            editorElement.style.paddingLeft = ${this.config.leftMargin === true ? '"20px"' : '"0px"'};
           })();
         </script>
         <script nonce="${nonce}" src="${lodashUri}"></script>
         <script nonce="${nonce}" src="${purifyUri}"></script>
         <script nonce="${nonce}" src="${markedUri}"></script>
+        <script nonce="${nonce}">var config = ${config};</script>
 				<script nonce="${nonce}" src="${scriptUri}"></script>
 			</body>
 			</html>`;
