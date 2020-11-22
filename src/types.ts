@@ -1,4 +1,4 @@
 export interface SidebarMardownNotesConfig {
-    readonly leftMargin : boolean,
-    readonly showWelcomeText : boolean
+  readonly leftMargin: boolean;
+  readonly showWelcomeText: boolean;
 }

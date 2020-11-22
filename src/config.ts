@@ -1,25 +1,21 @@
 import * as vscode from 'vscode';
 
-import {
-	SidebarMardownNotesConfig
-} from './types';
-
 class Config {
-    private readonly config: vscode.WorkspaceConfiguration;
-    
-    constructor() {
-        this.config = vscode.workspace.getConfiguration('sidebarMarkdownNotes');
-    }
+  private readonly config: vscode.WorkspaceConfiguration;
 
-    getLeftMargin() {
-        return !!this.config.get('leftMargin', false);
-    }
+  constructor() {
+    this.config = vscode.workspace.getConfiguration('sidebarMarkdownNotes');
+  }
 
-    getShowWelcomeText() {
-        return !!this.config.get('showWelcomeText', true);
-    }
+  getLeftMargin() {
+    return !!this.config.get('leftMargin', false);
+  }
+
+  getShowWelcomeText() {
+    return !!this.config.get('showWelcomeText', true);
+  }
 }
 
 export function getConfig() {
-	return new Config();
+  return new Config();
 }

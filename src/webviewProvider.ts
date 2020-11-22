@@ -52,7 +52,7 @@ export default class SidebarMarkdownNotesProvider implements vscode.WebviewViewP
 
     vscode.workspace.onDidChangeConfiguration((e) => {
       if (e.affectsConfiguration('sidebar-markdown-notes')) {
-        this.config = getConfig()
+        this.config = getConfig();
         webviewView.webview.html = this._getHtmlForWebview(webviewView.webview);
       }
     });
