@@ -112,6 +112,11 @@ export default class SidebarMarkdownNotesProvider implements vscode.WebviewViewP
     // Use a nonce to only allow a specific script to be run.
     const nonce = this._getNonce();
 
+    const config = JSON.stringify({
+      leftMargin: this.config.leftMargin,
+      showWelcomeText: this.config.showWelcomeText
+    });
+
     return `<!DOCTYPE html>
 			<html lang="en">
 			<head>
@@ -144,14 +149,14 @@ export default class SidebarMarkdownNotesProvider implements vscode.WebviewViewP
             const renderElement = document.getElementById('render');
             const editorElement = document.getElementById('content');
 
-            renderElement.style.paddingLeft = ${this.config.getLeftMargin() === true ? '"20px"' : '"0px"'};
-            editorElement.style.paddingLeft = ${this.config.getLeftMargin() === true ? '"20px"' : '"0px"'};
+            renderElement.style.paddingLeft = ${this.config.leftMargin === true ? '"20px"' : '"0px"'};
+            editorElement.style.paddingLeft = ${this.config.leftMargin === true ? '"20px"' : '"0px"'};
           })();
         </script>
-        <script nonce="${nonce}">var config = ${JSON.stringify(this.config)};</script>
         <script nonce="${nonce}" src="${lodashUri}"></script>
         <script nonce="${nonce}" src="${purifyUri}"></script>
         <script nonce="${nonce}" src="${markedUri}"></script>
+        <script nonce="${nonce}">var config = ${config};</script>
 				<script nonce="${nonce}" src="${scriptUri}"></script>
 			</body>
 			</html>`;

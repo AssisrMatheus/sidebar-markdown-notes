@@ -4,14 +4,14 @@ class Config {
   private readonly config: vscode.WorkspaceConfiguration;
 
   constructor() {
-    this.config = vscode.workspace.getConfiguration('sidebarMarkdownNotes');
+    this.config = vscode.workspace.getConfiguration('sidebar-markdown-notes');
   }
 
-  getLeftMargin() {
+  get leftMargin() {
     return !!this.config.get('leftMargin', false);
   }
 
-  getShowWelcomeText() {
+  get showWelcomeText() {
     return !!this.config.get('showWelcomeText', true);
   }
 }
