@@ -27,13 +27,13 @@
     }, secondsToHide || 3000);
   };
 
-  const welcomeMessage =
+  const welcomeText =
     '# Welcome to `sidebar-markdown-notes`\n\nStart by typing **markdown**.\n\nClick the `Toggle preview` button to view your notes\n\nAlso works with GitHub Flavored Markdown ✨✨\n- [ ] Start by  \n- [ ] creating your own  \n- [x] checklists!  \n\nOr any kind of markdown\n\n- Your imagination  \n- Is the limit';
 
   const initialState = {
     state: 'editor',
     currentPage: 0,
-    pages: [config['showWelcomeText'] ? welcomeMessage : ''],
+    pages: [config.showWelcomeText ? welcomeText : ''],
     version: 1
   };
 
@@ -182,7 +182,7 @@
       };
 
       if (!currentState.pages[newPageIndex]) {
-        newState = { ...newState, pages: [...newState.pages, `Page ${newPageIndex + 1}\n${welcomeMessage}`] };
+        newState = { ...newState, pages: [...newState.pages, `Page ${newPageIndex + 1}\n`] };
       }
 
       saveState(newState);
