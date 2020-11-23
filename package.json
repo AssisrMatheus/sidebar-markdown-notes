@@ -109,7 +109,7 @@
 					"sidebar-markdown-notes.showWelcomeText": {
 						"type": "boolean",
 						"default": true,
-						"description": "Specifies whether welcome text should be to added page one."
+						"description": "Specifies whether welcome text should be added to page one."
 					}
 				}
 			}
