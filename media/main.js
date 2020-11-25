@@ -159,6 +159,15 @@
     saveState(newState);
   };
 
+  const exportPage = () => {
+    // Update state and get current page's content
+    let newState = getUpdatedContent();
+    saveState(newState);
+    const content = newState.pages[newState.currentPage];
+    // Reply to extension with the text
+    vscode.postMessage({ type: 'exportPage', value: content });
+  };
+
   const previousPage = () => {
     if (currentState.currentPage > 0) {
       let newState = { ...getUpdatedContent(), currentPage: currentState.currentPage - 1 };
@@ -210,6 +219,10 @@
       }
       case 'resetData': {
         saveState(initialState);
+        break;
+      }
+      case 'exportPage': {
+        exportPage();
         break;
       }
     }
