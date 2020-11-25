@@ -47,6 +47,16 @@ export default class SidebarMarkdownNotesProvider implements vscode.WebviewViewP
           this.updateStatusBar(data.value);
           break;
         }
+        case 'exportPage': {
+          vscode.workspace.openTextDocument({ language: 'markdown' }).then((a: vscode.TextDocument) => {
+            vscode.window.showTextDocument(a, 1, false).then((e) => {
+              e.edit((edit) => {
+                edit.insert(new vscode.Position(0, 0), data.value);
+              });
+            });
+          });
+          break;
+        }
       }
     });
 
@@ -79,6 +89,12 @@ export default class SidebarMarkdownNotesProvider implements vscode.WebviewViewP
   public nextPage() {
     if (this._view) {
       this._view.webview.postMessage({ type: 'nextPage' });
+    }
+  }
+
+  public exportPage() {
+    if (this._view) {
+      this._view.webview.postMessage({ type: 'exportPage' });
     }
   }
 
