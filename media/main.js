@@ -84,9 +84,38 @@
         }
         editorElement.classList.add('hidden');
 
-        document
-          .querySelectorAll(`input[type='checkbox']`)
-          .forEach((check) => check.addEventListener('click', (e) => e.preventDefault()));
+        document.querySelectorAll(`input[type='checkbox']`).forEach((check) => {
+          // So we can lookup the checkbox in the markdown content
+          const content = check.parentElement.textContent.trim();
+          const getIsChecked = () => currentState.pages[currentState.currentPage].includes(`- [x] ${content}`);
+
+          // Ensure the checkbox state matches what is in the latest markdown
+          check.checked = getIsChecked();
+
+          check.addEventListener('click', () => {
+            const checked = getIsChecked();
+
+            // Update the markdown to use the new checked state
+            // Best to just rely on the markdown as the source of truth rather
+            // than trying to juggle some internal state for the checkbox
+            const newPageContent = checked
+              ? // Was checked - should now uncheck
+                currentState.pages[currentState.currentPage].replaceAll(`- [x] ${content}`, `- [ ] ${content}`)
+              : // Was not checked - should now check
+                currentState.pages[currentState.currentPage].replaceAll(`- [ ] ${content}`, `- [x] ${content}`);
+
+            let newState = {
+              ...currentState,
+              pages: [
+                ...currentState.pages.slice(0, currentState.currentPage),
+                newPageContent,
+                ...currentState.pages.slice(currentState.currentPage + 1)
+              ]
+            };
+
+            saveState(newState);
+          });
+        });
         break;
       }
       case 'editor': {
