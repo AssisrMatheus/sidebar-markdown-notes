@@ -76,6 +76,12 @@
 				"category": "Sidebar markdown notes",
 				"title": "Toggle preview",
 				"icon": "$(open-preview)"
+			},
+			{
+				"command": "sidebar-markdown-notes.exportPage",
+				"category": "Sidebar markdown notes",
+				"title": "Export page",
+				"icon": "$(symbol-reference)"
 			}
 		],
 		"menus": {
@@ -93,6 +99,11 @@
 				{
 					"command": "sidebar-markdown-notes.togglePreview",
 					"group": "navigation@2",
+					"when": "view == sidebarMarkdownNotes.webview"
+				},
+				{
+					"command": "sidebar-markdown-notes.exportPage",
+					"group": "navigation@3",
 					"when": "view == sidebarMarkdownNotes.webview"
 				}
 			]
