@@ -81,7 +81,7 @@ textarea {
   padding: var(--input-padding-vertical) var(--input-padding-horizontal);
   color: var(--vscode-input-foreground);
   outline-color: var(--vscode-input-border);
-  background-color: var(--vscode-input-background);
+  background-color: unset; /*var(--vscode-input-background);*/
 }
 
 input::placeholder,
