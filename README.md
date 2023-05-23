@@ -1,6 +1,6 @@
 # sidebar-markdown-notes
 
-[![Marketplace Version](https://vsmarketplacebadge.apphb.com/version/assisrMatheus.sidebar-markdown-notes.svg 'Current Release')](https://marketplace.visualstudio.com/items?itemName=assisrMatheus.sidebar-markdown-notes)
+[![Marketplace Version](images/icon.png 'Current Release')](https://marketplace.visualstudio.com/items?itemName=assisrMatheus.sidebar-markdown-notes)
 
 Write down notes directly in the sidebar using markdown.
 

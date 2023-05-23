@@ -78,10 +78,11 @@ textarea {
   width: 100%;
   border: none;
   font-family: var(--vscode-font-family);
+  font-size: var(--vscode-editor-font-size);
   padding: var(--input-padding-vertical) var(--input-padding-horizontal);
   color: var(--vscode-input-foreground);
   outline-color: var(--vscode-input-border);
-  background-color: var(--vscode-input-background);
+  background-color: unset; /*var(--vscode-input-background);*/
 }
 
 input::placeholder,
